@@ -17,7 +17,7 @@ public interface Service {
 	public void showAll();
 
 	// 내글 보기
-	public void showMine(Scanner sc);
+	public String showMine(Scanner sc);
 
 	// 로그인
 	public String signIn(Scanner sc);

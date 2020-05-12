@@ -43,6 +43,10 @@ public class ServiceImpl implements Service {
 		// System.out.print("제목>>");
 		// String title = sc.next();
 		ArrayList<Order> list = dao.selectAllOrder(id);
+//		if (list.isEmpty()) {
+//			System.out.println("주문 기록이 없습니다. 후기를 작성하시려면 주문을 먼저 이용해주세요.");
+//			return;
+//		}
 		for (Order o : list) {
 			System.out.println(o);
 		}
@@ -58,8 +62,7 @@ public class ServiceImpl implements Service {
 	@Override
 	public void deletePost(Scanner sc) {
 		// 글 삭제
-		String id = signIn(sc);
-		showMine(sc);// 내가 쓴 글 보여주기
+		String id = showMine(sc);// 내가 쓴 글 보여주기
 		System.out.print("삭제할 글번호를 입력하세요>>");
 		int num = sc.nextInt();
 		dao.delete(new Board(id, num));
@@ -75,13 +78,14 @@ public class ServiceImpl implements Service {
 	}
 
 	@Override
-	public void showMine(Scanner sc) {
+	public String showMine(Scanner sc) {
 		// 내글 보기
 		String id = signIn(sc);
 		ArrayList<Board> list = dao.selectMyPosts(id);
 		for (Board b : list) {
 			System.out.println(b);
 		}
+		return id;
 	}
 
 	@Override

@@ -8,6 +8,7 @@ public class Order {
 	private int price;// 선택 메뉴 가격
 	private String paid;// 결제확인
 	private String served;// 음식나옴확인
+	private String pDate;// 결제날짜
 
 	public Order() {
 
@@ -19,20 +20,23 @@ public class Order {
 		this.qty = qty;
 	}
 
-	public Order(int menuNum, int qty, int price) {
-		// 주문 수정용
+	public Order(int orderNum, int menuNum, int qty, String pDate) {
+		// 주방 조회용
+		this.orderNum = orderNum;
 		this.menuNum = menuNum;
 		this.qty = qty;
-		this.price = price;
+		this.pDate = pDate;
 	}
 
-	public Order(int orderNum, int menuNum, int qty, int price, String paid, String served) {
+	public Order(int orderNum, int menuNum, int qty, int price, String paid, String served, String pDate) {
+		// 회원 조회용
 		this.orderNum = orderNum;
 		this.menuNum = menuNum;
 		this.qty = qty;
 		this.price = price;
 		this.paid = paid;
 		this.served = served;
+		this.pDate = pDate;
 	}
 
 	public int getOrderNum() {
@@ -83,10 +87,22 @@ public class Order {
 		this.served = served;
 	}
 
+	public String getpDate() {
+		return pDate;
+	}
+
+	public void setpDate(String pDate) {
+		this.pDate = pDate;
+	}
+
 	@Override
 	public String toString() {
 		return "주문 [주문번호=" + orderNum + ", 메뉴번호=" + menuNum + ", 주문수량=" + qty + ", 결제금액=" + price + ", 결제처리=" + paid
-				+ "]";
+				+ ", 서빙완료=" + served + ", 결제날짜=" + pDate + "]";
+	}
+
+	public String forKitchen() {
+		return "주문 [주문번호=" + orderNum + ", 메뉴번호=" + menuNum + ", 주문수량=" + qty + ", 결제날짜=" + pDate + "]";
 	}
 
 }

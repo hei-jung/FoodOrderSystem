@@ -26,8 +26,7 @@ public class ServiceImpl implements Service {
 	public void addOrder(Scanner sc) {
 		// 주문 장바구니
 		lookMenu();// 전체 메뉴 보여주기
-		System.out.print("아이디를 입력하세요\n>>");
-		String id = sc.next();
+		String id = signIn(sc);
 		System.out.print("주문할 음식 번호를 고르세요\n>>");
 		int menuNum = sc.nextInt();
 		System.out.print("몇 개를 주문하시겠습니까?\n>>");
@@ -40,8 +39,8 @@ public class ServiceImpl implements Service {
 	@Override
 	public void checkOrder(Scanner sc) {
 		// 주문목록 보기
-		System.out.print("아이디를 입력하세요\n>>");
-		ArrayList<Order> list = dao.selectAllOrder(sc.next());
+		String id = signIn(sc);
+		ArrayList<Order> list = dao.selectAllOrder(id);
 		for (Order o : list) {
 			System.out.println(o);
 		}
@@ -50,10 +49,27 @@ public class ServiceImpl implements Service {
 	@Override
 	public void payAll(Scanner sc) {
 		// 결제
-		System.out.print("아이디를 입력하세요\n>>");
-		String id = sc.next();
+		String id = signIn(sc);
 		dao.pay(id, sc);
 		dao.setPaid(id);
+	}
+
+	@Override
+	public String signIn(Scanner sc) {
+		// 로그인
+		System.out.println("--로그인--");
+		System.out.print("id:");
+		String id = sc.next();
+		System.out.print("pw:");
+		String pwd = sc.next();
+		while (dao.login(id, pwd)) {
+			System.out.println("다시 시도하세요.");
+			System.out.print("id:");
+			id = sc.next();
+			System.out.print("pw:");
+			pwd = sc.next();
+		}
+		return id;
 	}
 
 }

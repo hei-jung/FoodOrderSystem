@@ -12,4 +12,6 @@ public interface Service {
 
 	public void payAll(Scanner sc);// 4.결제
 
+	public String signIn(Scanner sc);// 로그인
+
 }

@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import myDbApp.dbconn.DBConn;
 import myDbApp.kitchen.Food;
+import myDbApp.post.Member;
 
 public class DaoImpl implements Dao {
 
@@ -21,7 +22,7 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public ArrayList<Food> selectAllMenu() {
-		// 메뉴 조회(kitchen DB)
+		// 메뉴 조회(Foods DB)
 		String sql = "select * from Foods order by num";
 		ArrayList<Food> list = new ArrayList<Food>();
 		ResultSet rs = null;
@@ -52,7 +53,7 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public int selectPrice(Order o) {
-		// 가격 불러오기(kitchen DB)
+		// 가격 불러오기(Foods DB)
 		String sql = "select price from Foods where num=?";
 		int price = 0;
 		ResultSet rs = null;
@@ -80,7 +81,7 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public void insert(String id, Order o) {
-		// 주문장바구니
+		// 주문장바구니(users_log DB)
 		String sql = "insert into users_log(ordernum, id, foodnum, qty, amt) values(seq_order.nextval,?,?,?,?)";
 		// 주문번호(자동:seq_order.nextval),메뉴번호(주문자입력),수량(주문자입력),결제금액(식당)
 		Connection conn = db.getConnect();// db 연결
@@ -106,8 +107,9 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public ArrayList<Order> selectAllOrder(String id) {
-		// 내 주문목록 확인
-		String sql = "select * from users_log where id=?";// 주문번호,id,메뉴번호,수량,결제금액,결제확인,받았는지확인
+		// 내 주문목록 확인(users_log DB)
+		String sql = "select ordernum,id,foodnum,qty,amt,paid,served,to_char(sysdate,'yy/mm/dd') from users_log where id=?";
+		// 주문번호,id,메뉴번호,수량,결제금액,결제확인,받았는지,결제날짜
 		ArrayList<Order> list = new ArrayList<Order>();
 		ResultSet rs = null;
 		Connection conn = db.getConnect();// db 연결
@@ -122,7 +124,8 @@ public class DaoImpl implements Dao {
 				int price = rs.getInt(5);
 				String paid = rs.getString(6);
 				String served = rs.getString(7);
-				Order o = new Order(orderNum, menuNum, qty, price, paid, served);
+				String pdate = rs.getString(8);
+				Order o = new Order(orderNum, menuNum, qty, price, paid, served, pdate);
 				list.add(o);// db에서 읽어온 데이터를 list에 추가
 			}
 		} catch (SQLException e) {
@@ -141,7 +144,7 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public int calTotalPrice(String id) {
-		// 총 결제금액 계산
+		// 총 결제금액 계산(users_log DB)
 		// 계산을 자바에서 안 하고, DB에서 그룹함수를 이용해서 계산하고 여기로 가져오기
 		// 가져와서 출력(즉, 프로그램 사용자(소비자)에게 결제금액을 보여주도록)
 		String sql = "select sum(amt) from users_log where id=? and paid='N'";
@@ -225,8 +228,8 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public void setPaid(String id) {
-		// 결제 처리
-		String sql = "update users_log set paid='Y' where id=?";
+		// 결제 처리(users_log DB)
+		String sql = "update users_log set paid='Y', pay_date=sysdate where id=?";
 		Connection conn = db.getConnect();// db 연결
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql); // ? 맵핑
@@ -247,7 +250,7 @@ public class DaoImpl implements Dao {
 
 	@Override
 	public void savePoint(String id, int point) {
-		// 포인트 적립
+		// 포인트 적립(users DB)
 		String sql = "select points from users where id=?";
 		int userPoint = 0;
 		ResultSet rs = null;
@@ -282,6 +285,46 @@ public class DaoImpl implements Dao {
 			}
 		}
 
+	}
+
+	@Override
+	public boolean login(String id, String pwd) {
+		// 로그인(users DB)
+		String sql = "select id, pwd from users";
+		ArrayList<Member> list = new ArrayList<Member>();
+		ResultSet rs = null;
+		Connection conn = db.getConnect();// db 연결
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();// db에서 읽어오기 실행
+			while (rs.next()) {
+				String _id = rs.getString(1);
+				String _pwd = rs.getString(2);
+				list.add(new Member(_id, _pwd));// db에서 읽어온 데이터를 list에 추가
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for (Member m : list) {
+			if (id.equals(m.getId())) {
+				if (pwd.equals(m.getPwd())) {
+					return false;
+				} else {
+					System.out.print("비밀번호가 틀렸습니다. ");
+					return true;
+				}
+			}
+		}
+		System.out.print("존재하지 않는 아이디입니다. ");
+		return true;
 	}
 
 }

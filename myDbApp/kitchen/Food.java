@@ -18,7 +18,7 @@ public class Food {
 
 	@Override
 	public String toString() {
-		return "Food [num=" + num + ", name=" + name + ", price=" + price + "]";
+		return "[" + num + "]" + name + "\t--- " + price + "¿ø";
 	}
 
 }

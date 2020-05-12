@@ -2,6 +2,8 @@ package myDbApp.post;
 
 import java.util.ArrayList;
 
+import myDbApp.order.Order;
+
 public interface Dao {
 
 	// 전체 글 조회(board DB)
@@ -26,5 +28,8 @@ public interface Dao {
 	public ArrayList<Board> selectMyPosts(String id);
 
 	// 글제목: 주문했던 음식 이름으로!(foods DB)
-	public String rtFoodName(String id);
+	public String rtFoodName(String id, int num);
+
+	// 내 주문목록 확인(users_log DB)
+	public ArrayList<Order> selectAllOrder(String id);
 }

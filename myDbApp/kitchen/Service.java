@@ -9,4 +9,7 @@ public interface Service {
 
 	// 음식 준비
 	public void cook(Scanner sc);
+
+	// 오늘 매출 조회
+	public void tdSales();
 }

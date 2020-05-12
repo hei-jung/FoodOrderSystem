@@ -71,4 +71,32 @@ public class DaoImpl implements Dao {
 			}
 		}
 	}
+
+	@Override
+	public int todaySales() {
+		// 오늘의 매출(users_log DB)
+		int sales = 0;
+		String sql = "select sum(amt) from users_log where to_char(pay_date,'yy/mm/dd')=to_char(sysdate,'yy/mm/dd')";
+		ResultSet rs = null;
+		Connection conn = db.getConnect();// db 연결
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();// db에서 읽어오기 실행
+			if (rs.next()) {
+				sales = rs.getInt(1);// sales에 값 가져오기
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return sales;
+	}
+
 }

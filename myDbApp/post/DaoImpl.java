@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import myDbApp.dbconn.DBConn;
+import myDbApp.order.Order;
 
 public class DaoImpl implements Dao {
 
@@ -215,14 +216,80 @@ public class DaoImpl implements Dao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
 
 	@Override
-	public String rtFoodName(String id) {
-		String sql = "select food from foods where num in(select foodnum from users_log where id='go')";
-		return null;
+	public String rtFoodName(String id, int num) {
+		String sql = "select food from foods where num in(select foodnum from users_log where id=? and ordernum=?)";
+		ResultSet rs = null;
+		Connection conn = db.getConnect();// db 연결
+		String food = "";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);// ? 맵핑
+			pstmt.setString(1, id);
+			pstmt.setInt(2, num);
+			rs = pstmt.executeQuery();// db에서 읽어오기 실행
+			if (rs.next()) {
+				food = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return food;
+	}
+
+	@Override
+	public ArrayList<Order> selectAllOrder(String id) {
+		// 내 주문목록 확인(users_log DB)
+		String sql = "select ordernum,id,foodnum,qty,amt,paid,served,to_char(sysdate,'yy/mm/dd') from users_log where id=?";
+		// 주문번호,id,메뉴번호,수량,결제금액,결제확인,받았는지,결제날짜
+		ArrayList<Order> list = new ArrayList<Order>();
+		ResultSet rs = null;
+		Connection conn = db.getConnect();// db 연결
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);// ? 맵핑
+			rs = pstmt.executeQuery();// db에서 읽어오기 실행
+			while (rs.next()) {
+				int orderNum = rs.getInt(1);
+				int menuNum = rs.getInt(3);
+				int qty = rs.getInt(4);
+				int price = rs.getInt(5);
+				String paid = rs.getString(6);
+				String served = rs.getString(7);
+				String pdate = rs.getString(8);
+				Order o = new Order(orderNum, menuNum, qty, price, paid, served, pdate);
+				list.add(o);// db에서 읽어온 데이터를 list에 추가
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return list;
 	}
 
 }

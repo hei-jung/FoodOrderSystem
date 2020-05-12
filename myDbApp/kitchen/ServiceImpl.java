@@ -31,4 +31,11 @@ public class ServiceImpl implements Service {
 		dao.setServed(sc.nextInt());
 	}
 
+	@Override
+	public void tdSales() {
+		// 오늘 매출 조회
+		int sales = dao.todaySales();
+		System.out.println("오늘의 매출:" + sales + "원");
+	}
+
 }

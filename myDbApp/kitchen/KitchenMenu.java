@@ -11,7 +11,7 @@ public class KitchenMenu {
 	}
 
 	public void run(Scanner sc) {
-		String str = "1.조리완료 2.종료";
+		String str = "1.조리완료 2.매출조회 3.종료";
 		boolean flag = true;
 		while (flag) {
 			System.out.println(str);
@@ -21,6 +21,9 @@ public class KitchenMenu {
 				service.cook(sc);
 				break;
 			case 2:
+				service.tdSales();
+				break;
+			case 3:
 				flag = false;
 				System.out.println("종료합니다.");
 				break;

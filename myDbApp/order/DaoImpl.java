@@ -108,7 +108,7 @@ public class DaoImpl implements Dao {
 	@Override
 	public ArrayList<Order> selectAllOrder(String id) {
 		// 내 주문목록 확인(users_log DB)
-		String sql = "select ordernum,id,foodnum,qty,amt,paid,served,to_char(sysdate,'yy/mm/dd') from users_log where id=?";
+		String sql = "select ordernum,id,foodnum,qty,amt,paid,served,to_char(sysdate,'yy/mm/dd') from users_log where id=? order by ordernum";
 		// 주문번호,id,메뉴번호,수량,결제금액,결제확인,받았는지,결제날짜
 		ArrayList<Order> list = new ArrayList<Order>();
 		ResultSet rs = null;

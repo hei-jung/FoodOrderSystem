@@ -6,6 +6,7 @@ import java.sql.SQLException;
 public class OracleEx01 {
 
 	public static void main(String[] args) {
+		// jdbc 드라이버가 잘 연결됐는지 확인하기 위한 테스트 코드
 		String driver = "oracle.jdbc.driver.OracleDriver";
 		String url = "jdbc:oracle:thin:@localhost:1521:xe";
 		String user = "hr";

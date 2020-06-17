@@ -97,8 +97,13 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "주문 [주문번호=" + orderNum + ", 메뉴번호=" + menuNum + ", 주문수량=" + qty + ", 결제금액=" + price + ", 결제처리=" + paid
-				+ ", 서빙완료=" + served + ", 결제날짜=" + pDate + "]";
+		if (paid.equals("Y")) {
+			return "주문 [주문번호=" + orderNum + ", 메뉴번호=" + menuNum + ", 주문수량=" + qty + ", 결제금액=" + price + ", 결제처리=" + paid
+					+ ", 서빙완료=" + served + ", 결제날짜=" + pDate + "]";
+		} else {
+			return "주문 [주문번호=" + orderNum + ", 메뉴번호=" + menuNum + ", 주문수량=" + qty + ", 결제금액=" + price + ", 결제처리=" + paid
+					+ "]";
+		}
 	}
 
 	public String forKitchen() {

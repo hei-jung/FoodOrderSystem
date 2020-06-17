@@ -40,19 +40,17 @@ public class ServiceImpl implements Service {
 	public void writePost(Scanner sc) {
 		// 새글 쓰기
 		String id = signIn(sc);
-		// System.out.print("제목>>");
-		// String title = sc.next();
 		ArrayList<Order> list = dao.selectAllOrder(id);
-//		if (list.isEmpty()) {
-//			System.out.println("주문 기록이 없습니다. 후기를 작성하시려면 주문을 먼저 이용해주세요.");
-//			return;
-//		}
+		if (list.isEmpty()) {
+			System.out.println("주문 기록이 없습니다. 후기를 작성하시려면 주문을 먼저 이용해주세요.");
+			return;
+		}
 		for (Order o : list) {
 			System.out.println(o);
 		}
 		System.out.print("후기를 작성할 주문번호를 입력하세요>>");
 		int num = sc.nextInt();
-		String title = dao.rtFoodName(id, num);
+		String title = dao.rtFoodName(id, num); // 제목을 주문했던 음식 이름으로 지정 (주문번호로 찾아서)
 		System.out.print("내용을 입력하세요\n>>");
 		String content = sc.next();
 		String stars = pointsToStar(sc);
